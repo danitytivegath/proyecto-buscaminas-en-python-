@@ -10,9 +10,7 @@ import random
 
 os.system("")  #enables ANSI colors in the Windows console
 
-# ---------------------------------------------------------------
-# Constants
-# ---------------------------------------------------------------
+        #Constants
 
 #console colors (ANSI escape codes)
 RESET = "\033[0m"
