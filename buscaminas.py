@@ -1,13 +1,10 @@
-# ==========================================
-# PROYECTO FINAL - BUSCAMINAS (IPRO)
-# ==========================================
 
 import random
 import os
 
 os.system("")  # Activa los colores en la consola de Windows
 
-# ---------- Colores (códigos ANSI) ----------
+#colores (codigos ANSI) 
 RESET = "\033[0m"
 NEGRITA = "\033[1m"
 GRIS = "\033[90m"
@@ -18,20 +15,16 @@ AZUL = "\033[94m"
 MAGENTA = "\033[95m"
 CIAN = "\033[96m"
 
-# Color de cada número (el índice es el número de minas vecinas)
+#Color de cada número (el índice es el número de minas vecinas)
 COLORES_NUMEROS = ["", AZUL, VERDE, ROJO, MAGENTA, AMARILLO, CIAN, ROJO, GRIS]
 
-# ---------- Niveles de dificultad ----------
-# Cada lista tiene un dato por nivel (misma posición = mismo nivel)
+#niveles de dificultad 
 NOMBRES_DIF = ["Muy fácil", "Fácil", "Medio", "Difícil", "Experto"]
 FILAS_DIF = [4, 6, 8, 10, 12]
 MINAS_DIF = [3, 6, 10, 18, 30]
 MULTIPLICADOR_DIF = [1, 2, 3, 4, 5]
 
-
-# ==========================================
-# FUNCIONES AUXILIARES
-# ==========================================
+#funciones extra
 
 def leer_numero(mensaje, minimo, maximo):
     """Pide un número y repite hasta que sea válido (evita que el programa se caiga)."""
@@ -60,9 +53,8 @@ def titulo(texto):
     print(CIAN + "=" * 40 + RESET)
 
 
-# ==========================================
-# 1. REGISTRO
-# ==========================================
+#registro de usuario
+
 def registrar(usuarios, passwords, puntajes):
     titulo("REGISTRO DE NUEVO JUGADOR")
     nuevo_u = input("Crea tu usuario: ")
@@ -87,9 +79,7 @@ def registrar(usuarios, passwords, puntajes):
     print(VERDE + "¡Registro exitoso! Ya puedes iniciar sesión." + RESET)
 
 
-# ==========================================
-# 2. INICIO DE SESIÓN
-# ==========================================
+#iniciar sesion
 def login(usuarios, passwords, puntajes):
     titulo("INICIO DE SESIÓN")
     u = input("Usuario: ")
@@ -110,13 +100,10 @@ def login(usuarios, passwords, puntajes):
         print(ROJO + "Error: Usuario o contraseña incorrectos." + RESET)
 
 
-# ==========================================
-# 3. TABLA DE PUNTUACIONES (ordenada de mayor a menor)
-# ==========================================
+#tabla de puntuaciones
 def mostrar_tabla_puntuaciones(usuarios, puntajes):
     titulo("TABLA DE PUNTUACIONES")
 
-    # Guardamos las posiciones y las ordenamos (método burbuja)
     orden = []
     for i in range(0, len(usuarios)):
         orden.append(i)
@@ -134,9 +121,8 @@ def mostrar_tabla_puntuaciones(usuarios, puntajes):
     print(CIAN + "=" * 40 + RESET)
 
 
-# ==========================================
-# 4. LÓGICA DEL BUSCAMINAS
-# ==========================================
+#funcionamiento del buscaminas
+
 def colocar_minas(minas, filas, columnas, total_minas, f_segura, c_segura):
     """Coloca minas al azar. Nunca pone una en la primera casilla elegida."""
     colocadas = 0
@@ -147,7 +133,7 @@ def colocar_minas(minas, filas, columnas, total_minas, f_segura, c_segura):
             minas[f][c] = -1  # -1 significa "hay mina"
             colocadas = colocadas + 1
 
-    # Calcular cuántas minas tiene cada casilla alrededor
+    #calcular cuantas minas tiene cada casilla alrededor
     for f in range(0, filas):
         for c in range(0, columnas):
             if minas[f][c] != -1:
@@ -174,7 +160,7 @@ def destapar(f, c, minas, visible, filas, columnas):
         ca = actual[1]
 
         if visible[fa][ca] != "?":
-            continue  # ya estaba destapada o tiene bandera
+            continue  #ya estaba destapada o tiene bandera
 
         visible[fa][ca] = "D"
         destapadas = destapadas + 1
@@ -197,8 +183,8 @@ def simbolo(visible, minas, f, c, revelar_todo):
 
     if revelar_todo and valor == -1:
         if estado == "B":
-            return VERDE + "B" + RESET   # bandera bien puesta
-        return ROJO + "*" + RESET        # mina
+            return VERDE + "B" + RESET   #bandera bien puesta
+        return ROJO + "*" + RESET        #mina
     if estado == "B":
         return AMARILLO + "B" + RESET
     if estado == "?":
@@ -284,7 +270,7 @@ def jugar_buscaminas(pos_usuario, lista_puntajes):
                 elif visible[f_user][c_user] == "D":
                     print(ROJO + "Ya habías destapado esta casilla. Prueba otra." + RESET)
                 else:
-                    # Las minas se colocan en el primer movimiento (así nunca pierdes al inicio)
+                    #las minas se colocan en el primer movimiento (así el usuario nunca pierde en el primer turno)
                     if not minas_colocadas:
                         colocar_minas(minas, filas, columnas, minas_totales, f_user, c_user)
                         minas_colocadas = True
@@ -303,7 +289,7 @@ def jugar_buscaminas(pos_usuario, lista_puntajes):
         else:
             print(ROJO + "Acción no válida. Usa d, b o r." + RESET)
 
-    # ---------- Fin de la partida ----------
+    #game over
     if resultado == "derrota":
         mostrar_tablero(visible, minas, filas, columnas, True)
         print(ROJO + NEGRITA + "¡BOOM!  Pisaste una mina. Perdiste la partida." + RESET)
@@ -324,9 +310,7 @@ def jugar_buscaminas(pos_usuario, lista_puntajes):
         print(VERDE + "¡Nuevo récord personal guardado en la tabla!" + RESET)
 
 
-# ==========================================
-# 5. MENÚ INTERNO
-# ==========================================
+#menu interno
 def menu_juego(nombre, pos, puntajes, usuarios):
     op = ""
     while op != "3":
@@ -347,9 +331,7 @@ def menu_juego(nombre, pos, puntajes, usuarios):
             print(ROJO + "Opción inválida." + RESET)
 
 
-# ==========================================
-# 6. PROGRAMA PRINCIPAL
-# ==========================================
+#programa principal
 def main():
     usuarios = ["pro_gamer"]
     passwords = ["1234"]
@@ -376,5 +358,4 @@ def main():
             print(ROJO + "Opción no válida." + RESET)
 
 
-if __name__ == "__main__":
-    main()
+main()
