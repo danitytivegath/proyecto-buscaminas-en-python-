@@ -8,13 +8,13 @@ and a global leaderboard.
 import os
 import random
 
-os.system("")  # Enables ANSI colors in the Windows console
+os.system("")  #enables ANSI colors in the Windows console
 
 # ---------------------------------------------------------------
 # Constants
 # ---------------------------------------------------------------
 
-# Console colors (ANSI escape codes)
+#console colors (ANSI escape codes)
 RESET = "\033[0m"
 BOLD = "\033[1m"
 GRAY = "\033[90m"
@@ -25,36 +25,33 @@ BLUE = "\033[94m"
 MAGENTA = "\033[95m"
 CYAN = "\033[96m"
 
-# Color of each number (the index is the number of adjacent mines)
+#color of each number (the index is the number of adjacent mines)
 NUMBER_COLORS = ["", BLUE, GREEN, RED, MAGENTA, YELLOW, CYAN, RED, GRAY]
 
-# Difficulty levels: the same index in each list refers to the same level
+#difficulty levels: the same index in each list refers to the same level
 DIFFICULTY_NAMES = ["Beginner", "Easy", "Medium", "Hard", "Expert"]
 BOARD_SIZES = [4, 6, 8, 10, 12]
 MINE_COUNTS = [3, 6, 10, 18, 30]
 SCORE_MULTIPLIERS = [1, 2, 3, 4, 5]
 
-# Scoring
+#scoring
 POINTS_PER_CELL = 10
 WIN_BONUS = 100
 
-# Values stored in the mine board
+#values stored in the mine board
 MINE = -1
 
-# States of a cell in the visible board
+#states of a cell in the visible board
 HIDDEN = "?"
 REVEALED = "R"
 FLAGGED = "F"
 
-# Possible outcomes of a game
+#possible outcomes of a game
 RESULT_WIN = "win"
 RESULT_LOSS = "loss"
 RESULT_QUIT = "quit"
 
-
-# ---------------------------------------------------------------
-# Helper functions
-# ---------------------------------------------------------------
+#Helper functions
 
 def read_number(prompt, minimum, maximum):
     """Ask for a number until the user enters a valid one in [minimum, maximum]."""
@@ -85,9 +82,9 @@ def print_title(text):
     print(CYAN + "=" * 40 + RESET)
 
 
-# ---------------------------------------------------------------
-# User management
-# ---------------------------------------------------------------
+
+#User management
+
 
 def register_user(usernames, passwords, scores):
     """Create a new user account, rejecting empty or duplicated usernames."""
@@ -137,7 +134,7 @@ def show_leaderboard(usernames, scores):
     """Print all players sorted by high score (highest first)."""
     print_title("LEADERBOARD")
 
-    # Sort the user indexes (bubble sort) without modifying the original lists
+    #sort the user indexes (bubble sort) without modifying the original lists
     order = []
     for i in range(0, len(usernames)):
         order.append(i)
@@ -155,9 +152,7 @@ def show_leaderboard(usernames, scores):
     print(CYAN + "=" * 40 + RESET)
 
 
-# ---------------------------------------------------------------
-# Game logic
-# ---------------------------------------------------------------
+#Game logic
 
 def place_mines(mine_board, rows, columns, mine_count, safe_row, safe_column):
     """Randomly place the mines and compute the adjacent-mine count of every cell.
@@ -174,7 +169,7 @@ def place_mines(mine_board, rows, columns, mine_count, safe_row, safe_column):
             mine_board[row][column] = MINE
             placed = placed + 1
 
-    # Count the mines around every cell that is not a mine
+    #count the mines around every cell that is not a mine
     for row in range(0, rows):
         for column in range(0, columns):
             if mine_board[row][column] != MINE:
@@ -195,7 +190,7 @@ def reveal_cells(row, column, mine_board, visible_board, rows, columns):
     Returns the number of cells that were revealed.
     """
     revealed_count = 0
-    pending = [[row, column]]  # Cells waiting to be processed
+    pending = [[row, column]]  #cells waiting to be processed
 
     while len(pending) > 0:
         current = pending.pop()
@@ -203,7 +198,7 @@ def reveal_cells(row, column, mine_board, visible_board, rows, columns):
         current_column = current[1]
 
         if visible_board[current_row][current_column] != HIDDEN:
-            continue  # Already revealed or flagged
+            continue  #already revealed or flagged
 
         visible_board[current_row][current_column] = REVEALED
         revealed_count = revealed_count + 1
@@ -226,8 +221,8 @@ def get_cell_symbol(visible_board, mine_board, row, column, reveal_all):
 
     if reveal_all and value == MINE:
         if state == FLAGGED:
-            return GREEN + "F" + RESET  # Correctly flagged mine
-        return RED + "*" + RESET        # Mine
+            return GREEN + "F" + RESET  #correctly flagged mine
+        return RED + "*" + RESET        #mine
     if state == FLAGGED:
         return YELLOW + "F" + RESET
     if state == HIDDEN:
@@ -271,8 +266,8 @@ def play_minesweeper(user_index, scores):
     mine_count = MINE_COUNTS[level]
     multiplier = SCORE_MULTIPLIERS[level]
 
-    mine_board = create_matrix(rows, columns, 0)          # Adjacent-mine counts and mines
-    visible_board = create_matrix(rows, columns, HIDDEN)  # What the player can see
+    mine_board = create_matrix(rows, columns, 0)          #adjacent-mine counts and mines
+    visible_board = create_matrix(rows, columns, HIDDEN)  #what the player can see
 
     mines_placed = False
     game_active = True
@@ -310,13 +305,13 @@ def play_minesweeper(user_index, scores):
                 else:
                     print(RED + "You cannot flag a revealed cell." + RESET)
 
-            else:  # action == "r"
+            else:  #action == "r"
                 if visible_board[row][column] == FLAGGED:
                     print(RED + "That cell is flagged. Remove the flag first with 'f'." + RESET)
                 elif visible_board[row][column] == REVEALED:
                     print(RED + "That cell is already revealed. Try another one." + RESET)
                 else:
-                    # Mines are placed on the first move so it is always safe
+                    #mines are placed on the first move so it is always safe
                     if not mines_placed:
                         place_mines(mine_board, rows, columns, mine_count, row, column)
                         mines_placed = True
@@ -335,7 +330,7 @@ def play_minesweeper(user_index, scores):
         else:
             print(RED + "Invalid action. Use r, f or q." + RESET)
 
-    # ----- End of the game -----
+    #game over
     if result == RESULT_LOSS:
         print_board(visible_board, mine_board, rows, columns, True)
         print(RED + BOLD + "BOOM! You stepped on a mine. You lost the game." + RESET)
@@ -355,10 +350,8 @@ def play_minesweeper(user_index, scores):
         scores[user_index] = game_score
         print(GREEN + "New personal record saved to the leaderboard!" + RESET)
 
+#menus
 
-# ---------------------------------------------------------------
-# Menus
-# ---------------------------------------------------------------
 
 def game_menu(username, user_index, scores, usernames):
     """Menu shown after a successful login."""
@@ -409,5 +402,4 @@ def main():
             print(RED + "Invalid option." + RESET)
 
 
-if __name__ == "__main__":
-    main()
+main()
